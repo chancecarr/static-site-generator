@@ -1,5 +1,5 @@
 import unittest
-from processmarkdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from processmarkdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextType, TextNode
 
 class TestProcessMarkdown(unittest.TestCase):
@@ -154,7 +154,7 @@ class TestProcessMarkdown(unittest.TestCase):
     def test_split_image_no_change(self):
         node = TextNode("This is text with no image", TextType.TEXT)
         new_nodes = split_nodes_image([node])
-        self.assertEqual(
+        self.assertListEqual(
             new_nodes,
             [
                 TextNode("This is text with no image", TextType.TEXT),
@@ -164,9 +164,40 @@ class TestProcessMarkdown(unittest.TestCase):
     def test_split_link_no_change(self):
         node = TextNode("This is text with no link", TextType.TEXT)
         new_nodes = split_nodes_link([node])
-        self.assertEqual(
+        self.assertListEqual(
             new_nodes,
             [
                 TextNode("This is text with no link", TextType.TEXT),
+            ]
+        )
+
+    def test_text_to_textnodes(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            nodes,
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ]
+        )
+
+    def test_text_to_textnodes_no_nested(self):
+        text = "This is **text _with_** a nested italic"
+        nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            nodes,
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text _with_", TextType.BOLD),
+                TextNode(" a nested italic", TextType.TEXT)
             ]
         )
