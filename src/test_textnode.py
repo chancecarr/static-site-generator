@@ -23,6 +23,10 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("Original text", TextType.BOLD, "https://google.com")
         self.assertNotEqual(node, node2)
 
+    def test_not_eq_across_types(self):
+        node = TextNode("Original text", TextType.BOLD)
+        self.assertNotEqual(node, 5)
+
 
 if __name__ == "__main__":
     unittest.main()
