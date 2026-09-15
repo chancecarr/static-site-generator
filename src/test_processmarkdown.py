@@ -1,5 +1,5 @@
 import unittest
-from processmarkdown import split_nodes_delimiter
+from processmarkdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextType, TextNode
 
 class TestProcessMarkdown(unittest.TestCase):
@@ -68,12 +68,53 @@ class TestProcessMarkdown(unittest.TestCase):
         )
 
     def test_split_nodes_no_change(self):
-            node = TextNode("This is text with no delimiter", TextType.TEXT)
-            new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
-            self.assertEqual(
-                new_nodes,
-                [
-                    TextNode("This is text with no delimiter", TextType.TEXT),
-                ]
+        node = TextNode("This is text with no delimiter", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
+        self.assertEqual(
+            new_nodes,
+            [
+                TextNode("This is text with no delimiter", TextType.TEXT),
+            ]
+        )
+
+    def test_extract_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_links(self):
+        matches = extract_markdown_links(
+            "This is text with a [link](https://www.google.com)"
+        )
+        self.assertListEqual([("link", "https://www.google.com")], matches)
+
+    def test_extract_images_multiple(self):
+        matches = extract_markdown_images(
+            "This is text with two images: ![image1](https://i.imgur.com/zjjcJKZ.png) and ![image2](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([("image1", "https://i.imgur.com/zjjcJKZ.png"), ("image2", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_links_multiple(self):
+        matches = extract_markdown_links(
+            "This is text with two links: [link1](https://www.google.com) and [link2](https://www.google.com)"
+        )
+        self.assertListEqual([("link1", "https://www.google.com"), ("link2", "https://www.google.com")], matches)
+
+    def test_extract_links_mistake(self):
+        matches = extract_markdown_links(
+            "This is text with no valid [link](https://www.google.com"
+        )
+        self.assertListEqual([], matches)
+
+    def test_extract_images_mistake(self):
+        matches = extract_markdown_images(
+            "This is text with no valid [image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual([], matches)
+
+    def test_extract_links_ignore_image(self):
+            matches = extract_markdown_links(
+                "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) but no link"
             )
-        
+            self.assertListEqual([], matches)
