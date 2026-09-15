@@ -1,5 +1,13 @@
 import unittest
-from processmarkdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
+from processmarkdown import (
+    split_nodes_delimiter, 
+    extract_markdown_images, 
+    extract_markdown_links, 
+    split_nodes_image, 
+    split_nodes_link, 
+    text_to_textnodes,
+    markdown_to_blocks,
+)
 from textnode import TextType, TextNode
 
 class TestProcessMarkdown(unittest.TestCase):
@@ -201,3 +209,28 @@ class TestProcessMarkdown(unittest.TestCase):
                 TextNode(" a nested italic", TextType.TEXT)
             ]
         )
+
+    def test_markdown_to_blocks_basic(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks_empty(self):
+        md = "\n\n\n\n\n\n\n"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, [])
