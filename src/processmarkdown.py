@@ -125,13 +125,13 @@ def heading_block_to_html_node(block: str) -> HTMLNode:
     return ParentNode(tag, text_to_children(text))
 
 def unordered_list_to_html_node(block: str) -> HTMLNode:
-    items = block.split("- ")
-    children = [HTMLNode("li", None, text_to_children(item)) for item in items]
+    items = block.replace("- ", "").split("\n")
+    children = [ParentNode("li", text_to_children(item)) for item in items]
     return ParentNode("ul", children)   
 
 def ordered_list_to_html_node(block: str) -> HTMLNode:
-    items = re.split(r"(^|\n)\d+\. ", block)
-    children = [HTMLNode("li", None, text_to_children(item)) for item in items]
+    items = list(filter(lambda x: x != "" and x != "\n", re.split(r"(^|\n)\d+\. ", block)))
+    children = [ParentNode("li", text_to_children(item)) for item in items]
     return ParentNode("ol", children)
 
 def blocktype_to_html_node(block: str, block_type: BlockType) -> HTMLNode:

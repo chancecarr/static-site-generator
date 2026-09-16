@@ -284,3 +284,31 @@ the **same** even with inline stuff
             html,
             "<div><h6>This is an h6</h6><h3>This is an h3</h3><h1>This is an h1 with <b>bold</b> text</h1></div>",
         )
+
+    def test_unordered_list(self):
+        md = """
+- First
+- Second
+- Third
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>First</li><li>Second</li><li>Third</li></ul></div>",
+        )
+
+    def test_unordered_list(self):
+        md = """
+1. First
+2. Second
+3. Third
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>First</li><li>Second</li><li>Third</li></ol></div>",
+        )
