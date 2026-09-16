@@ -1,9 +1,10 @@
-from generatecontent import copy_from_source_to_destination, generate_pages_recursive, generate_page
+from generatecontent import copy_from_source_to_destination, generate_pages_recursive
+import sys
 
 def main():
-    copy_from_source_to_destination("./static", "./public")
-    # generate_page("./content/index.md", "./template.html", "./public/index.html")
-    generate_pages_recursive("./content", "./template.html", "./public")
+    basepath = "/" if len(sys.argv) < 2 else sys.argv[1]
+    copy_from_source_to_destination("./static", "./docs")
+    generate_pages_recursive("./content", "./template.html", "./docs", basepath)
 
 if __name__ == "__main__":
     main()
