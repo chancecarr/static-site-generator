@@ -1,4 +1,8 @@
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
+from htmlnode import HTMLNode
+from parentnode import ParentNode
+from leafnode import LeafNode
+from blocktype import BlockType, block_to_block_type
 import re
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
@@ -92,3 +96,68 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     blocks = markdown.split("\n\n")
     blocks = list(map(lambda x: x.strip(), blocks))
     return list(filter(lambda x: x != "", blocks))
+
+def text_to_children(text: str) -> list[HTMLNode]:
+    text_nodes = text_to_textnodes(text)
+    return list(map(text_node_to_html_node, text_nodes))
+
+def heading_block_to_html_node(block: str) -> HTMLNode:
+    tag: str
+    text: str
+    if block.startswith("###### "):
+        tag = "h6"
+        text = block.removeprefix("###### ")
+    elif block.startswith("##### "):
+        tag = "h5"
+        text = block.removeprefix("##### ")
+    elif block.startswith("#### "):
+        tag = "h4"
+        text = block.removeprefix("#### ")
+    elif block.startswith("### "):
+        tag = "h3"
+        text = block.removeprefix("### ")
+    elif block.startswith("## "):
+        tag = "h2"
+        text = block.removeprefix("## ")
+    else:
+        tag = "h1"
+        text = block.removeprefix("# ")
+    return ParentNode(tag, text_to_children(text))
+
+def unordered_list_to_html_node(block: str) -> HTMLNode:
+    items = block.split("- ")
+    children = [HTMLNode("li", None, text_to_children(item)) for item in items]
+    return ParentNode("ul", children)   
+
+def ordered_list_to_html_node(block: str) -> HTMLNode:
+    items = re.split(r"(^|\n)\d+\. ", block)
+    children = [HTMLNode("li", None, text_to_children(item)) for item in items]
+    return ParentNode("ol", children)
+
+def blocktype_to_html_node(block: str, block_type: BlockType) -> HTMLNode:
+    match block_type:
+        case BlockType.PARAGRAPH:
+            return ParentNode("p", text_to_children(block.replace("\n", " ")))
+        case BlockType.HEADING:
+            return heading_block_to_html_node(block)
+        case BlockType.CODE:
+            return ParentNode("pre", [LeafNode("code", block.removeprefix("```\n").removesuffix("```"))])
+        case BlockType.QUOTE:
+            block = block.replace(">", "")
+            return HTMLNode("blockquote", None, text_to_children(block))
+        case BlockType.UNORDERED_LIST:
+            return unordered_list_to_html_node(block)
+        case BlockType.ORDERED_LIST:
+            return ordered_list_to_html_node(block)
+        case _:
+            raise Exception("unknown block type")
+
+def markdown_to_html_node(markdown: str) -> HTMLNode:
+    html_nodes: list[HTMLNode] = []
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        node = blocktype_to_html_node(block, block_type)
+        html_nodes.append(node)
+    return ParentNode("div", html_nodes)
+
