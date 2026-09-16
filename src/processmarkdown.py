@@ -102,37 +102,33 @@ def text_to_children(text: str) -> list[HTMLNode]:
     return list(map(text_node_to_html_node, text_nodes))
 
 def heading_block_to_html_node(block: str) -> HTMLNode:
-    tag: str
-    text: str
-    if block.startswith("###### "):
-        tag = "h6"
-        text = block.removeprefix("###### ")
-    elif block.startswith("##### "):
-        tag = "h5"
-        text = block.removeprefix("##### ")
-    elif block.startswith("#### "):
-        tag = "h4"
-        text = block.removeprefix("#### ")
-    elif block.startswith("### "):
-        tag = "h3"
-        text = block.removeprefix("### ")
-    elif block.startswith("## "):
-        tag = "h2"
-        text = block.removeprefix("## ")
-    else:
-        tag = "h1"
-        text = block.removeprefix("# ")
+    heading = re.findall(r"^(#+) ", block)[0]
+    if not heading: raise Exception("no heading found")
+
+    text = re.findall(r"^#+ (.*)(?:\n|$)", block)[0]
+    if not text: raise Exception("no text found")
+
+    tag = f"h{len(heading)}"
     return ParentNode(tag, text_to_children(text))
 
 def unordered_list_to_html_node(block: str) -> HTMLNode:
-    items = block.replace("- ", "").split("\n")
+    items = re.findall(r"^- (.*)(?:\n|$)", block, re.M)
     children = [ParentNode("li", text_to_children(item)) for item in items]
     return ParentNode("ul", children)   
 
 def ordered_list_to_html_node(block: str) -> HTMLNode:
-    items = list(filter(lambda x: x != "" and x != "\n", re.split(r"(^|\n)\d+\. ", block)))
+    items = re.findall(r"^\d+\. (.*)(?:\n|$)", block, re.M)
     children = [ParentNode("li", text_to_children(item)) for item in items]
     return ParentNode("ol", children)
+
+def blockquote_to_html_node(block: str) -> HTMLNode:
+    items = re.findall(r"^> *(.*)(?:\n|$)", block, re.M)
+    return ParentNode("blockquote", text_to_children(" ".join(items)))
+
+def code_to_html_node(block: str) -> HTMLNode:
+    items = re.findall(r"```\n(.*)```", block, re.DOTALL)
+    if not items: raise Exception("no code found")
+    return ParentNode("pre", [LeafNode("code", items[0])])
 
 def blocktype_to_html_node(block: str, block_type: BlockType) -> HTMLNode:
     match block_type:
@@ -141,10 +137,9 @@ def blocktype_to_html_node(block: str, block_type: BlockType) -> HTMLNode:
         case BlockType.HEADING:
             return heading_block_to_html_node(block)
         case BlockType.CODE:
-            return ParentNode("pre", [LeafNode("code", block.removeprefix("```\n").removesuffix("```"))])
+            return code_to_html_node(block)
         case BlockType.QUOTE:
-            block = block.replace(">", "")
-            return HTMLNode("blockquote", None, text_to_children(block))
+            return blockquote_to_html_node(block)
         case BlockType.UNORDERED_LIST:
             return unordered_list_to_html_node(block)
         case BlockType.ORDERED_LIST:

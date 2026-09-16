@@ -1,7 +1,7 @@
 import unittest
 from blocktype import BlockType, block_to_block_type
 
-class TestProcessMarkdown(unittest.TestCase):
+class TestBlockType(unittest.TestCase):
     def test_block_to_block_type_heading(self):
         block = "### Heading"
         block_type = block_to_block_type(block)

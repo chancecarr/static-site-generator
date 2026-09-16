@@ -299,7 +299,7 @@ the **same** even with inline stuff
             "<div><ul><li>First</li><li>Second</li><li>Third</li></ul></div>",
         )
 
-    def test_unordered_list(self):
+    def test_ordered_list(self):
         md = """
 1. First
 2. Second
