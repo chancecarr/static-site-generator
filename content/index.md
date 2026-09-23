@@ -8,19 +8,15 @@
 
 Converts **markdown** like this:
 
-`Begin sample markdown`
+`> "I am in fact a Hobbit in all but size."`
+`>`
+`> -- J.R.R. Tolkien`
 
-> "I am in fact a Hobbit in all but size."
->
-> -- J.R.R. Tolkien
+`## Blog posts`
 
-## Blog posts
-
-- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)
-- [Why Tom Bombadil Was a Mistake](/blog/tom)
-- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
-
-`End sample markdown`
+`- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)`
+`- [Why Tom Bombadil Was a Mistake](/blog/tom)`
+`- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)`
 
 To **HTML**:
 
