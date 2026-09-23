@@ -1,12 +1,14 @@
 # Static Site Generator
 
-[< Back Home](/)
+[< Back Home](/..)
 
-[See the code](https://github.com/chancecarr/static-site-generator)
+[**See the code**](https://github.com/chancecarr/static-site-generator)
 
 ### Explanation
 
 Converts **markdown** like this:
+
+`Begin sample markdown`
 
 > "I am in fact a Hobbit in all but size."
 >
@@ -18,21 +20,12 @@ Converts **markdown** like this:
 - [Why Tom Bombadil Was a Mistake](/blog/tom)
 - [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
 
-Here's what `elflang` looks like (the perfect coding language):
-
-```
-func main(){
-    fmt.Println("Aiya, Ambar!")
-}
-```
+`End sample markdown`
 
 To **HTML**:
 
 ```
-<blockquote>"I am in fact a Hobbit in all but size."  -- J.R.R. Tolkien</blockquote><h2>Blog posts</h2><ul><li><a href="/static-site-generator/blog/glorfindel">Why Glorfindel is More Impressive than Legolas</a></li><li><a href="/static-site-generator/blog/tom">Why Tom Bombadil Was a Mistake</a></li><li><a href="/static-site-generator/blog/majesty">The Unparalleled Majesty of "The Lord of the Rings"</a></li></ul><p>Here's what <code>elflang</code> looks like (the perfect coding language):</p><pre><code>func main(){
-    fmt.Println("Aiya, Ambar!")
-}
-</code>
+&lt;blockquote&gt;"I am in fact a Hobbit in all but size."  -- J.R.R. Tolkien&lt;/blockquote&gt;&lt;h2&gt;Blog posts&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href="/static-site-generator/blog/glorfindel"&gt;Why Glorfindel is More Impressive than Legolas&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="/static-site-generator/blog/tom"&gt;Why Tom Bombadil Was a Mistake&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="/static-site-generator/blog/majesty"&gt;The Unparalleled Majesty of "The Lord of the Rings"&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
 ```
 
 _(It's not formatted prettily but it gets the job done.)_
