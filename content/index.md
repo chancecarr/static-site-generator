@@ -2,21 +2,21 @@
 
 [< Back Home](/..)
 
-[**See the code**](https://github.com/chancecarr/static-site-generator)
+###### [See the code](https://github.com/chancecarr/static-site-generator)
 
 ### Explanation
 
 Converts **markdown** like this:
 
-`> "I am in fact a Hobbit in all but size."`
-`>`
-`> -- J.R.R. Tolkien`
-
-`## Blog posts`
-
-`- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)`
-`- [Why Tom Bombadil Was a Mistake](/blog/tom)`
-`- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)`
+```
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
+## Blog posts
+- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)
+- [Why Tom Bombadil Was a Mistake](/blog/tom)
+- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
+```
 
 To **HTML**:
 
